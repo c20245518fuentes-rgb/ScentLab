@@ -10,10 +10,23 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
+    <!-- Theme Bootstrap -->
+    <script>
+        (function () {
+            var html = document.documentElement;
+            try {
+                var saved = localStorage.getItem('scentlab-theme');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (saved === 'dark' || (!saved && prefersDark)) html.classList.add('dark');
+            } catch (e) {}
+        })();
+    </script>
+
     <!-- ===== STARTER HEAD ===== -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style type="text/tailwindcss">
-        /* C1 & C2: Define palette tokens */
+        @custom-variant dark (&:where(.dark, .dark *));
+
         @theme {
             --color-cream: #F5F0E8;
             --color-ink: #29251F;
@@ -26,20 +39,19 @@
 
         @layer base {
             html { scroll-behavior: smooth; }
-            body { @apply bg-cream text-ink font-sans antialiased; }
+            body { @apply bg-cream text-ink dark:bg-ink dark:text-cream font-sans antialiased; }
             section[id] { scroll-margin-top: 5.5rem; }
         }
 
-        /* A5: Reusable component classes */
         @layer components {
-            .btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium tracking-wide transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-deep focus-visible:ring-offset-2 focus-visible:ring-offset-cream bg-gold text-ink hover:bg-gold-light; }
-            .btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium tracking-wide transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-deep focus-visible:ring-offset-2 focus-visible:ring-offset-cream border border-ink/25 text-ink hover:border-ink/70; }
-            .card { @apply rounded-2xl border border-ink/10 bg-white/60; }
-            .field { @apply w-full rounded-xl border border-ink/15 bg-white/80 px-4 py-3 text-sm text-ink placeholder-ink/40 focus:border-gold-deep focus:outline-none focus:ring-2 focus:ring-gold-deep/30; }
-            .label { @apply mb-1.5 block text-sm font-medium text-ink/85; }
-            .section-title { @apply font-serif text-3xl tracking-tight text-ink md:text-4xl lg:text-5xl; }
-            .section-lead { @apply mt-3 max-w-xl text-base leading-relaxed text-ink/70 md:text-lg; }
-            .eyebrow { @apply text-xs uppercase tracking-[0.25em] text-gold-deep; }
+            .btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium tracking-wide transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-deep focus-visible:ring-offset-2 focus-visible:ring-offset-cream dark:focus-visible:ring-gold dark:focus-visible:ring-offset-ink bg-gold text-ink hover:bg-gold-light dark:bg-gold dark:text-ink dark:hover:bg-gold-light; }
+            .btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium tracking-wide transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-deep focus-visible:ring-offset-2 focus-visible:ring-offset-cream dark:focus-visible:ring-gold dark:focus-visible:ring-offset-ink border border-ink/25 text-ink hover:border-ink/70 dark:border-cream/25 dark:text-cream dark:hover:border-cream/70; }
+            .card { @apply rounded-2xl border border-ink/10 bg-white/60 dark:border-cream/10 dark:bg-ink/40; }
+            .field { @apply w-full rounded-xl border border-ink/15 bg-white/80 px-4 py-3 text-sm text-ink placeholder-ink/40 focus:border-gold-deep focus:outline-none focus:ring-2 focus:ring-gold-deep/30 dark:border-cream/15 dark:bg-ink/50 dark:text-cream dark:placeholder-cream/40 dark:focus:border-gold dark:focus:ring-gold/30; }
+            .label { @apply mb-1.5 block text-sm font-medium text-ink/85 dark:text-cream/85; }
+            .section-title { @apply font-serif text-3xl tracking-tight text-ink dark:text-cream md:text-4xl lg:text-5xl; }
+            .section-lead { @apply mt-3 max-w-xl text-base leading-relaxed text-ink/70 dark:text-cream/70 md:text-lg; }
+            .eyebrow { @apply text-xs uppercase tracking-[0.25em] text-gold-deep dark:text-gold; }
         }
     </style>
     <!-- ===== END STARTER HEAD ===== -->
@@ -47,17 +59,22 @@
 
 <body class="min-h-screen overflow-x-hidden">
 
-    <!-- Header -->
-    <header class="sticky top-0 z-40 border-b border-ink/10 bg-cream/90 backdrop-blur-md">
+    <header class="sticky top-0 z-40 border-b border-ink/10 bg-cream/90 backdrop-blur-md dark:border-cream/10 dark:bg-ink/85">
         <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3.5 md:px-6 lg:px-8">
-            <a href="#hero" class="font-serif text-xl tracking-tight text-ink md:text-2xl">
-                Scent<span class="text-gold-deep">Lab</span>
+            <a href="#hero" class="font-serif text-xl tracking-tight text-ink dark:text-cream md:text-2xl">
+                Scent<span class="text-gold-deep dark:text-gold">Lab</span>
             </a>
             <ul class="hidden items-center gap-5 md:flex lg:gap-7">
-                <li><a href="#about" class="text-sm text-ink/80 transition-colors hover:text-gold-deep">Discover</a></li>
-                <li><a href="#work" class="text-sm text-ink/80 transition-colors hover:text-gold-deep">Collection</a></li>
-                <li><a href="#contact" class="text-sm text-ink/80 transition-colors hover:text-gold-deep">Contact</a></li>
+                <li><a href="#about" class="text-sm text-ink/80 transition-colors hover:text-gold-deep dark:text-cream/80 dark:hover:text-gold">Discover</a></li>
+                <li><a href="#work" class="text-sm text-ink/80 transition-colors hover:text-gold-deep dark:text-cream/80 dark:hover:text-gold">Collection</a></li>
+                <li><a href="#contact" class="text-sm text-ink/80 transition-colors hover:text-gold-deep dark:text-cream/80 dark:hover:text-gold">Contact</a></li>
             </ul>
+            <div class="flex items-center gap-2">
+                <button id="darkModeToggle" type="button" aria-label="Switch to dark mode" class="grid h-10 w-10 place-items-center rounded-full border border-ink/15 text-ink transition-colors hover:border-ink/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-deep dark:border-cream/20 dark:text-cream dark:focus-visible:ring-gold">
+                    <svg class="h-5 w-5 dark:hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg class="hidden h-5 w-5 dark:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                </button>
+            </div>
         </nav>
     </header>
 
@@ -67,11 +84,11 @@
             <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 md:grid-cols-2 md:gap-12 md:px-6 md:py-20 lg:gap-16 lg:px-8 lg:py-24">
                 <div>
                     <p class="eyebrow">Custom Perfume Studio</p>
-                    <h1 class="mt-4 font-serif text-5xl leading-[1.05] tracking-tight text-ink md:text-6xl lg:text-7xl">
+                    <h1 class="mt-4 font-serif text-5xl leading-[1.05] tracking-tight text-ink dark:text-cream md:text-6xl lg:text-7xl">
                         <span class="block">Your Scent.</span>
                         <span class="block">Your Signature.</span>
                     </h1>
-                    <p class="mt-6 max-w-md text-base leading-relaxed text-ink/75 md:text-lg">
+                    <p class="mt-6 max-w-md text-base leading-relaxed text-ink/75 dark:text-cream/75 md:text-lg">
                         Discover the art of fragrance. Explore captivating notes, create your signature blend, and make every moment unforgettable.
                     </p>
                     <div class="mt-8 flex flex-wrap gap-3 items-center">
@@ -79,15 +96,15 @@
                     </div>
                 </div>
                 <div class="relative">
-                    <div class="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] border border-ink/10">
+                    <div class="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] border border-ink/10 dark:border-cream/10">
                         <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1000&q=80" alt="A luxury perfume bottle" class="h-full w-full object-cover" />
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- About: Discover Scents -->
-        <section id="about" class="border-t border-ink/10 py-16 md:py-24">
+        <!-- About -->
+        <section id="about" class="border-t border-ink/10 py-16 dark:border-cream/10 md:py-24">
             <div class="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
                 <div class="max-w-2xl">
                     <p class="eyebrow">Discover</p>
@@ -100,9 +117,9 @@
                             <img src="https://images.unsplash.com/photo-1615634260167-c8cdede054de?auto=format&fit=crop&w=700&q=80" alt="Woody fragrance mood" class="h-full w-full object-cover" loading="lazy" />
                         </div>
                         <div class="p-5 flex-1 flex flex-col">
-                            <h3 class="font-serif text-xl text-ink">Woody</h3>
-                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep">Warm · Grounded</p>
-                            <p class="mt-3 text-sm text-ink/70">Sandalwood, cedarwood, vetiver.</p>
+                            <h3 class="font-serif text-xl text-ink dark:text-cream">Woody</h3>
+                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep dark:text-gold">Warm · Grounded</p>
+                            <p class="mt-3 text-sm text-ink/70 dark:text-cream/70">Sandalwood, cedarwood, vetiver.</p>
                         </div>
                     </article>
                     <article class="card overflow-hidden flex flex-col">
@@ -110,9 +127,9 @@
                             <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=700&q=80" alt="Floral fragrance mood" class="h-full w-full object-cover" loading="lazy" />
                         </div>
                         <div class="p-5 flex-1 flex flex-col">
-                            <h3 class="font-serif text-xl text-ink">Floral</h3>
-                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep">Soft · Elegant</p>
-                            <p class="mt-3 text-sm text-ink/70">Rose, jasmine, peony.</p>
+                            <h3 class="font-serif text-xl text-ink dark:text-cream">Floral</h3>
+                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep dark:text-gold">Soft · Elegant</p>
+                            <p class="mt-3 text-sm text-ink/70 dark:text-cream/70">Rose, jasmine, peony.</p>
                         </div>
                     </article>
                     <article class="card overflow-hidden flex flex-col">
@@ -120,9 +137,9 @@
                             <img src="https://images.unsplash.com/photo-1587017539504-67cfbddac569?auto=format&fit=crop&w=700&q=80" alt="Citrus fragrance mood" class="h-full w-full object-cover" loading="lazy" />
                         </div>
                         <div class="p-5 flex-1 flex flex-col">
-                            <h3 class="font-serif text-xl text-ink">Citrus</h3>
-                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep">Bright · Fresh</p>
-                            <p class="mt-3 text-sm text-ink/70">Bergamot, lemon, mandarin.</p>
+                            <h3 class="font-serif text-xl text-ink dark:text-cream">Citrus</h3>
+                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep dark:text-gold">Bright · Fresh</p>
+                            <p class="mt-3 text-sm text-ink/70 dark:text-cream/70">Bergamot, lemon, mandarin.</p>
                         </div>
                     </article>
                     <article class="card overflow-hidden flex flex-col">
@@ -130,17 +147,17 @@
                             <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=700&q=80" alt="Fresh fragrance mood" class="h-full w-full object-cover" loading="lazy" />
                         </div>
                         <div class="p-5 flex-1 flex flex-col">
-                            <h3 class="font-serif text-xl text-ink">Fresh</h3>
-                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep">Clean · Airy</p>
-                            <p class="mt-3 text-sm text-ink/70">Green tea, aquatic accords, musk.</p>
+                            <h3 class="font-serif text-xl text-ink dark:text-cream">Fresh</h3>
+                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep dark:text-gold">Clean · Airy</p>
+                            <p class="mt-3 text-sm text-ink/70 dark:text-cream/70">Green tea, aquatic accords, musk.</p>
                         </div>
                     </article>
                 </div>
             </div>
         </section>
 
-        <!-- Work: Signature Collection -->
-        <section id="work" class="border-t border-ink/10 py-16 md:py-24">
+        <!-- Work -->
+        <section id="work" class="border-t border-ink/10 py-16 dark:border-cream/10 md:py-24">
             <div class="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
                 <div class="max-w-2xl">
                     <p class="eyebrow">Collection</p>
@@ -153,10 +170,10 @@
                             <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=700&q=80" alt="Golden Hour perfume bottle" class="h-full w-full object-cover" loading="lazy" />
                         </div>
                         <div class="p-5 flex-1 flex flex-col">
-                            <h3 class="font-serif text-xl text-ink">Golden Hour</h3>
-                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep">Woody</p>
-                            <p class="mt-3 text-sm text-ink/70">A warm, lingering amber glow.</p>
-                            <p class="mt-4 font-medium text-ink mt-auto">₱899</p>
+                            <h3 class="font-serif text-xl text-ink dark:text-cream">Golden Hour</h3>
+                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep dark:text-gold">Woody</p>
+                            <p class="mt-3 text-sm text-ink/70 dark:text-cream/70">A warm, lingering amber glow.</p>
+                            <p class="mt-4 font-medium text-ink dark:text-cream mt-auto">₱899</p>
                         </div>
                     </article>
                     <article class="card overflow-hidden flex flex-col">
@@ -164,10 +181,10 @@
                             <img src="https://images.unsplash.com/photo-1610461888750-10bfc601b874?auto=format&fit=crop&w=700&q=80" alt="Petal Muse perfume bottle" class="h-full w-full object-cover" loading="lazy" />
                         </div>
                         <div class="p-5 flex-1 flex flex-col">
-                            <h3 class="font-serif text-xl text-ink">Petal Muse</h3>
-                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep">Floral</p>
-                            <p class="mt-3 text-sm text-ink/70">Soft petals, gently unfolding.</p>
-                            <p class="mt-4 font-medium text-ink mt-auto">₱799</p>
+                            <h3 class="font-serif text-xl text-ink dark:text-cream">Petal Muse</h3>
+                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep dark:text-gold">Floral</p>
+                            <p class="mt-3 text-sm text-ink/70 dark:text-cream/70">Soft petals, gently unfolding.</p>
+                            <p class="mt-4 font-medium text-ink dark:text-cream mt-auto">₱799</p>
                         </div>
                     </article>
                     <article class="card overflow-hidden flex flex-col">
@@ -175,10 +192,10 @@
                             <img src="https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?auto=format&fit=crop&w=700&q=80" alt="Citrus Theory perfume bottle" class="h-full w-full object-cover" loading="lazy" />
                         </div>
                         <div class="p-5 flex-1 flex flex-col">
-                            <h3 class="font-serif text-xl text-ink">Citrus Theory</h3>
-                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep">Citrus</p>
-                            <p class="mt-3 text-sm text-ink/70">Bright light, sharpened by cedar.</p>
-                            <p class="mt-4 font-medium text-ink mt-auto">₱749</p>
+                            <h3 class="font-serif text-xl text-ink dark:text-cream">Citrus Theory</h3>
+                            <p class="mt-1 text-xs uppercase tracking-[0.15em] text-gold-deep dark:text-gold">Citrus</p>
+                            <p class="mt-3 text-sm text-ink/70 dark:text-cream/70">Bright light, sharpened by cedar.</p>
+                            <p class="mt-4 font-medium text-ink dark:text-cream mt-auto">₱749</p>
                         </div>
                     </article>
                 </div>
@@ -186,7 +203,7 @@
         </section>
 
         <!-- Contact -->
-        <section id="contact" class="border-t border-ink/10 py-16 md:py-24">
+        <section id="contact" class="border-t border-ink/10 bg-white/40 py-16 dark:border-cream/10 dark:bg-ink/30 md:py-24">
             <div class="mx-auto max-w-3xl px-4 md:px-6 lg:px-8">
                 <div class="text-center">
                     <p class="eyebrow">Contact</p>
@@ -211,7 +228,7 @@
         </section>
     </main>
 
-    <footer class="border-t border-ink/10 bg-ink text-cream py-8 text-center text-sm text-cream/60">
+    <footer class="border-t border-ink/10 bg-ink text-cream dark:border-cream/10 py-8 text-center text-sm text-cream/60">
         <p>&copy; <span id="year"></span> Scent Lab — Custom Perfume Studio. All product details and prices are illustrative demo content.</p>
     </footer>
 
