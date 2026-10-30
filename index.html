@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scent Lab — Custom Perfume Studio</title>
-    
+    <meta name="description" content="Scent Lab is a fictional custom perfume studio.">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-    <!-- Theme Bootstrap -->
+    <!-- Theme Bootstrap & Failsafe -->
     <script>
         (function () {
             var html = document.documentElement;
@@ -19,6 +20,10 @@
                 var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 if (saved === 'dark' || (!saved && prefersDark)) html.classList.add('dark');
             } catch (e) {}
+            html.classList.add('js');
+            setTimeout(function () {
+                if (!window.__scentlabReady) html.classList.remove('js');
+            }, 2500);
         })();
     </script>
 
@@ -52,13 +57,39 @@
             .section-title { @apply font-serif text-3xl tracking-tight text-ink dark:text-cream md:text-4xl lg:text-5xl; }
             .section-lead { @apply mt-3 max-w-xl text-base leading-relaxed text-ink/70 dark:text-cream/70 md:text-lg; }
             .eyebrow { @apply text-xs uppercase tracking-[0.25em] text-gold-deep dark:text-gold; }
+            
+            .note-chip { @apply rounded-full border border-ink/15 bg-white/60 px-3 py-1.5 text-sm text-ink transition-colors hover:border-gold-deep dark:border-cream/15 dark:bg-ink/40 dark:text-cream dark:hover:border-gold cursor-pointer; }
+            .note-chip[aria-pressed="true"] { @apply border-gold-deep bg-gold text-ink dark:border-gold dark:bg-gold dark:text-ink; }
+            
+            .family-option { @apply flex flex-col items-start gap-2 rounded-xl border border-ink/10 bg-white/50 p-4 text-left transition-colors hover:border-gold-deep dark:border-cream/10 dark:bg-ink/40 dark:hover:border-gold cursor-pointer; }
+            .family-option[aria-pressed="true"] { @apply border-gold-deep ring-2 ring-gold-deep/30 dark:border-gold dark:ring-gold/40; }
+            
+            .intensity-option { @apply flex-1 rounded-xl border border-ink/10 bg-white/50 px-3 py-3 text-center text-sm text-ink transition-colors hover:border-gold-deep dark:border-cream/10 dark:bg-ink/40 dark:text-cream dark:hover:border-gold cursor-pointer; }
+            .intensity-option[aria-pressed="true"] { @apply border-gold-deep bg-gold/15 dark:border-gold dark:bg-gold/20; }
+            
+            #step-progress li { @apply flex items-center gap-2 text-xs text-ink/50 dark:text-cream/50; }
+            #step-progress .dot { @apply grid h-7 w-7 place-items-center rounded-full border border-ink/25 text-[11px] font-semibold dark:border-cream/25; }
+            #step-progress li[data-state="active"] { @apply text-ink dark:text-cream; }
+            #step-progress li[data-state="active"] .dot { @apply border-ink bg-ink text-cream dark:border-cream dark:bg-cream dark:text-ink; }
+            #step-progress li[data-state="done"] { @apply text-ink dark:text-cream; }
+            #step-progress li[data-state="done"] .dot { @apply border-gold bg-gold text-ink; }
         }
     </style>
     <!-- ===== END STARTER HEAD ===== -->
+    
+    <style>
+        @media (prefers-reduced-motion: no-preference) {
+            .js .reveal { opacity: 0; }
+        }
+    </style>
 </head>
 
 <body class="min-h-screen overflow-x-hidden">
 
+    <!-- E2: Scroll progress bar -->
+    <div id="progressBar" class="fixed top-0 left-0 h-[3px] w-full bg-gold origin-left z-[60] pointer-events-none" style="transform: scaleX(0);"></div>
+
+    <!-- Header -->
     <header class="sticky top-0 z-40 border-b border-ink/10 bg-cream/90 backdrop-blur-md dark:border-cream/10 dark:bg-ink/85">
         <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3.5 md:px-6 lg:px-8">
             <a href="#hero" class="font-serif text-xl tracking-tight text-ink dark:text-cream md:text-2xl">
@@ -67,6 +98,7 @@
             <ul class="hidden items-center gap-5 md:flex lg:gap-7">
                 <li><a href="#about" class="text-sm text-ink/80 transition-colors hover:text-gold-deep dark:text-cream/80 dark:hover:text-gold">Discover</a></li>
                 <li><a href="#work" class="text-sm text-ink/80 transition-colors hover:text-gold-deep dark:text-cream/80 dark:hover:text-gold">Collection</a></li>
+                <li><a href="#customize" class="text-sm text-ink/80 transition-colors hover:text-gold-deep dark:text-cream/80 dark:hover:text-gold">Customize</a></li>
                 <li><a href="#contact" class="text-sm text-ink/80 transition-colors hover:text-gold-deep dark:text-cream/80 dark:hover:text-gold">Contact</a></li>
             </ul>
             <div class="flex items-center gap-2">
@@ -79,23 +111,26 @@
     </header>
 
     <main>
-        <!-- Hero -->
+        <!-- Hero: animated by page-load timeline (D1) -->
         <section id="hero" class="relative">
             <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 md:grid-cols-2 md:gap-12 md:px-6 md:py-20 lg:gap-16 lg:px-8 lg:py-24">
                 <div>
-                    <p class="eyebrow">Custom Perfume Studio</p>
-                    <h1 class="mt-4 font-serif text-5xl leading-[1.05] tracking-tight text-ink dark:text-cream md:text-6xl lg:text-7xl">
-                        <span class="block">Your Scent.</span>
-                        <span class="block">Your Signature.</span>
+                    <p class="hero-eyebrow eyebrow">Custom Perfume Studio</p>
+                    <h1 class="hero-title mt-4 font-serif text-5xl leading-[1.05] tracking-tight text-ink dark:text-cream md:text-6xl lg:text-7xl">
+                        <span class="line block">Your Scent.</span>
+                        <span class="line block">Your Signature.</span>
                     </h1>
-                    <p class="mt-6 max-w-md text-base leading-relaxed text-ink/75 dark:text-cream/75 md:text-lg">
+                    <p class="hero-lead mt-6 max-w-md text-base leading-relaxed text-ink/75 dark:text-cream/75 md:text-lg">
                         Discover the art of fragrance. Explore captivating notes, create your signature blend, and make every moment unforgettable.
                     </p>
-                    <div class="mt-8 flex flex-wrap gap-3 items-center">
-                        <a href="#work" class="btn-primary">Explore Collection</a>
+                    <div class="hero-ctas mt-8 flex flex-wrap gap-3 items-center">
+                        <a href="#customize" class="btn-primary">Create Your Scent</a>
+                        <a href="#work" class="btn-ghost">Explore Collection</a>
+                        <button id="replayBtn" type="button" class="text-sm underline text-ink/60 hover:text-ink dark:text-cream/60 dark:hover:text-cream ml-2">Replay Intro</button>
                     </div>
                 </div>
-                <div class="relative">
+                <div class="hero-visual relative">
+                    <div class="absolute -inset-4 rounded-[2rem] bg-gold/10 blur-2xl" aria-hidden="true"></div>
                     <div class="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] border border-ink/10 dark:border-cream/10">
                         <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1000&q=80" alt="A luxury perfume bottle" class="h-full w-full object-cover" />
                     </div>
@@ -103,8 +138,8 @@
             </div>
         </section>
 
-        <!-- About -->
-        <section id="about" class="border-t border-ink/10 py-16 dark:border-cream/10 md:py-24">
+        <!-- About: Discover Scents -->
+        <section id="about" class="reveal border-t border-ink/10 py-16 dark:border-cream/10 md:py-24">
             <div class="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
                 <div class="max-w-2xl">
                     <p class="eyebrow">Discover</p>
@@ -156,8 +191,56 @@
             </div>
         </section>
 
-        <!-- Work -->
-        <section id="work" class="border-t border-ink/10 py-16 dark:border-cream/10 md:py-24">
+        <!-- Customizer Section (Interactive) -->
+        <section id="customize" class="reveal border-t border-ink/10 bg-white/40 py-16 dark:border-cream/10 dark:bg-ink/30 md:py-24">
+            <div class="mx-auto max-w-3xl px-4 md:px-6 lg:px-8">
+                <div class="text-center">
+                    <p class="eyebrow">Customize</p>
+                    <h2 class="section-title mt-3">Create Something Uniquely Yours</h2>
+                </div>
+                <div class="card mt-10 p-5 md:p-8">
+                    <ol id="step-progress" class="mb-6 flex items-center gap-2 md:gap-4" aria-label="Customizer progress">
+                        <li data-step="1" data-state="active"><span class="dot">1</span><span class="hidden md:inline">Family</span></li>
+                        <li data-step="2"><span class="dot">2</span><span class="hidden md:inline">Notes</span></li>
+                        <li data-step="3"><span class="dot">3</span><span class="hidden md:inline">Intensity</span></li>
+                    </ol>
+                    
+                    <div id="customizer-error" class="mb-4 hidden rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"></div>
+                    
+                    <!-- Step 1 -->
+                    <div class="step-panel" data-step="1">
+                        <div class="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4" id="family-options">
+                            <button type="button" class="family-option" data-family="woody" aria-pressed="false"><span class="font-medium text-ink dark:text-cream">Woody</span></button>
+                            <button type="button" class="family-option" data-family="floral" aria-pressed="false"><span class="font-medium text-ink dark:text-cream">Floral</span></button>
+                            <button type="button" class="family-option" data-family="citrus" aria-pressed="false"><span class="font-medium text-ink dark:text-cream">Citrus</span></button>
+                            <button type="button" class="family-option" data-family="fresh" aria-pressed="false"><span class="font-medium text-ink dark:text-cream">Fresh</span></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="step-panel" data-step="2" hidden>
+                        <div id="notes-container" class="mt-5 flex flex-wrap gap-2"></div>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="step-panel" data-step="3" hidden>
+                        <div class="mt-5 flex flex-col gap-3 sm:flex-row" id="intensity-options">
+                            <button type="button" class="intensity-option" data-intensity="Light" aria-pressed="false">Light</button>
+                            <button type="button" class="intensity-option" data-intensity="Balanced" aria-pressed="false">Balanced</button>
+                            <button type="button" class="intensity-option" data-intensity="Bold" aria-pressed="false">Bold</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex items-center justify-between border-t border-ink/10 pt-5 dark:border-cream/10">
+                        <button id="prev-step" type="button" class="btn-ghost" disabled>Previous</button>
+                        <button id="next-step" type="button" class="btn-primary">Next</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Work: Signature Collection -->
+        <section id="work" class="reveal border-t border-ink/10 py-16 dark:border-cream/10 md:py-24">
             <div class="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
                 <div class="max-w-2xl">
                     <p class="eyebrow">Collection</p>
@@ -203,7 +286,7 @@
         </section>
 
         <!-- Contact -->
-        <section id="contact" class="border-t border-ink/10 bg-white/40 py-16 dark:border-cream/10 dark:bg-ink/30 md:py-24">
+        <section id="contact" class="reveal border-t border-ink/10 bg-white/40 py-16 dark:border-cream/10 dark:bg-ink/30 md:py-24">
             <div class="mx-auto max-w-3xl px-4 md:px-6 lg:px-8">
                 <div class="text-center">
                     <p class="eyebrow">Contact</p>
@@ -223,6 +306,7 @@
                         <textarea id="message" name="message" rows="5" required class="field"></textarea>
                     </div>
                     <button type="submit" class="btn-primary w-full sm:w-auto">Send Message</button>
+                    <p id="form-success" class="hidden text-sm text-green-700 dark:text-green-400">Demo submission received. This is a frontend demonstration.</p>
                 </form>
             </div>
         </section>
@@ -232,6 +316,8 @@
         <p>&copy; <span id="year"></span> Scent Lab — Custom Perfume Studio. All product details and prices are illustrative demo content.</p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
